@@ -16,13 +16,16 @@ namespace FootballGameUI
             SeedPassPlays();
             SeedRunPlays();
 
-            Console.WriteLine("You are down by 3 at the Patriots 15 yard line.\n" +
-                                "In order to help Russel Wilson and the Seahawks the Super Bowl, you must choose the right combination" +
-                                "of plays for a touchdown.\n" +
-                                "Fied Goal ties the game and forces Overtime. And Tom Brady always wins in Overtime.");
+            Console.WriteLine(" RedZone: 1st Down.  30 Seconds on the Clock.\n" +
+                                " You are down by 3 at the Patriots 15 yard line.\n" +
+                                " In order to help Russell Wilson and the Seahawks win the Super Bowl, you\n" +
+                                " must choose the right combination of plays for a touchdown.\n" +
+                                " \n" +
+                                " Field Goal ties the game and forces Overtime. Don't Forget: Tom Brady ALWAYS wins in Overtime!");
 
 
             Console.WriteLine("************************");
+            Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
             Console.Clear();
 
@@ -42,7 +45,7 @@ namespace FootballGameUI
                 {
                     case "1":
                         DisplayRunPlays();
-                        Console.WriteLine("Please choose a play number you would like to run...");
+                        Console.WriteLine("Please select the play number you would like to run...");
                         int runNumber = int.Parse(Console.ReadLine());
                         FootballField newFieldPosition = CalculateFieldPosition(RunRunPlayByRunNumber(runNumber), currentFieldPosition);
                         IsGameOver(newFieldPosition.YardLine);
@@ -50,8 +53,9 @@ namespace FootballGameUI
                         Console.WriteLine($"It is now {newFieldPosition.Down} down on the {newFieldPosition.YardLine} yard line.");
                         break;
                     case "2":
+                        Console.Clear();
                         DisplayPassPlays();
-                        Console.WriteLine("Please choose the play number you would like to run...");
+                        Console.WriteLine("Please select the play number you would like to run...");
                         int passNumber = int.Parse(Console.ReadLine());
                         FootballField newFieldPositionPass = newFieldPosition = CalculateFieldPosition(RunPassPlayByPlayNumber(passNumber), currentFieldPosition);
                         IsGameOver(currentFieldPosition.YardLine);
@@ -162,7 +166,7 @@ namespace FootballGameUI
 
             if (yardsGained >= currentFieldPosition.YardLine)
             {
-                Console.WriteLine("Congratulations! You are going to Disney World!!!!");
+                Console.WriteLine("CONGRATULATIONS! You're going to DISNEY WORLD!!!!");
                 FootballField newFieldPosition = new FootballField(0, 0);
                 return newFieldPosition;
             }

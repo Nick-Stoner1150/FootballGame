@@ -1,0 +1,81 @@
+Initial Planning Session Notes
+
+Classes
+	Offense 
+	Defense  each player has name, position, number, 
+
+	Russell Wilson, QB, #, QB sneak/Throw ball
+	wide receiver, WR, #, One Hand Catch
+	kicker, kicker, #, Field Goal
+
+	Plays, has a name, function, pass or run (bool, if state)
+		Run
+		Catch
+		Fumble
+		Punt
+		Touchdown
+		FieldGoal
+		Incomplete Catch
+
+
+	RedZone, 15 yr line, 1st down, 
+		"You are down by 3, 1st Down at the 15 yrd line with 30 seconds on the clock.  In order to win the game you must chose right combination of plays for a touchdown."
+		"Field Goal ties the game and forces Overtime." 
+		Prompt the User to Choose a Type of Place.  
+			Display Method: 
+					Run, Pass, Kick Field Goal, Punt to Other Team
+					User selects ""Run", 
+					  Run could be a method, different to 
+							Toss to Runningback,       ////[Running back makes it 5 yards]
+							Hand Off to Runningback, /////// [makes it 3 yards]
+							Quarterback Draw,         ///// [makes it 2 yards]
+										**After selecting Run, prompt Player to choose a random number for result:
+													Random number dictates:
+															Completes 5 yards
+															Completes 3 yards
+															Tackled, -1 yard
+															TOUCHDOWN!!
+															Pass Dropped/Incomplete
+															Fumble
+
+					  Pass
+							Throws to Wide Receiver in End Zone
+							Throws to Wide Receiver Screen (2 yards past Line of Scrimmage giving room for run)
+							Throws to Tight End ??????
+										**After selecting Pass, prompt Play to choose a random number for result:
+													Random number dictates:
+															Catch, completes 6 yards
+															Catch, completes 3 yards
+															Catch, completes 1 yard
+															TOUCHDOWN!!
+															Incomplete
+															Intercepted
+
+					Kick Field Goal
+							
+
+					Punt
+
+					
+
+					  
+
+
+		"You are down by 3, 1st Down at the 15 yrd line with 30 seconds on the clock.  In order to win the game you must chose right combination of plays for a touchdown."
+		"Field Goal ties the game and forces Overtime." 
+			Prompt the User to Choose a type of play.  
+		Player Chooses  
+				"Run"
+			Prompt, "Which Run would you like to Select from Playbook?\n" +
+							1. Toss to Runningback\n" +
+							2. Hand off to Runningback\n" +
+							3. Quarterback Draw (Quarterback keeps ball and runs toward Endzone)"
+		Player Chooses
+				"Toss to Runningback"
+		Result of Play
+				"Runningback down at "
+				
+
+				
+
+	
