@@ -7,14 +7,12 @@ namespace FootballGameUI
 {
     public class ProgramUI
     {
-        private RunPlays_Repo _runPlaysRepo = new RunPlays_Repo();
-        private PassPlays_Repo _passPlaysRepo = new PassPlays_Repo();
+        private Plays_Repo _playsRepo = new Plays_Repo();
         FootballField currentFieldPosition = new FootballField(15, 1);
 
         public void Run()
         {
-            SeedPassPlays();
-            SeedRunPlays();
+            SeedPlays();
 
             Console.WriteLine(" RedZone: 1st Down.  30 Seconds on the Clock.\n" +
                                 " You are down by 3 at the Patriots 15 yard line.\n" +
@@ -45,9 +43,11 @@ namespace FootballGameUI
                 {
                     case "1":
                         DisplayRunPlays();
+                        Console.WriteLine();
+                        DisplayPassPlays();
                         Console.WriteLine("Please select the play number you would like to run...");
                         int runNumber = int.Parse(Console.ReadLine());
-                        FootballField newFieldPosition = CalculateFieldPosition(RunRunPlayByRunNumber(runNumber), currentFieldPosition);
+                        FootballField newFieldPosition = CalculateFieldPosition(RunPlayByPlayNumber(runNumber), currentFieldPosition);
                         bool isGameOver = IsGameOver(newFieldPosition.YardLine);
                         if (!isGameOver)
                         {
@@ -60,26 +60,9 @@ namespace FootballGameUI
                         }
                         break;
                     case "2":
-                        Console.Clear();
-                        DisplayPassPlays();
-                        Console.WriteLine("Please select the play number you would like to run...");
-                        int passNumber = int.Parse(Console.ReadLine());
-                        FootballField newFieldPositionPass = CalculateFieldPosition(RunPassPlayByPlayNumber(passNumber), currentFieldPosition);
-                        bool isGameOver2 = IsGameOver(newFieldPositionPass.YardLine);
-                        if (!isGameOver2)
-                        {
-                            ResetFieldPosition(currentFieldPosition);
-                        }
-                        else
-                        {
-                            SetNewFieldPosition(currentFieldPosition, newFieldPositionPass);
-                            Console.WriteLine($"It is now {newFieldPositionPass.Down} down on the {newFieldPositionPass.YardLine} yard line.");
-                        }
-                        break;
-                    case "3":
                         ResetFieldPosition(currentFieldPosition);
                         break;
-                    case "4":
+                    case "3":
                         Console.WriteLine("Goodbye!");
                         isRunning = false;
                         break;
@@ -97,88 +80,83 @@ namespace FootballGameUI
         private void DisplayMenu()
         {
             Console.WriteLine($"-----Beat Tom Brady-------\n" +
-                              $"1. Run Plays\n" +
-                              $"2. Pass Plays\n" +
-                              $"3. Reset or Start Over\n" +
-                              $"4. Quit Game\n");
+                              $"1. PlayBook\n" +
+                              $"2. Reset or Start Over\n" +
+                              $"3. Quit Game\n");
         }
 
         public void DisplayRunPlays()
         {
             Console.Clear();
-            List<RunPlays> listOfPlays = _runPlaysRepo.ShowRunPlays();
+            Console.WriteLine("------Run Plays------");
+            List<Plays> listOfPlays = _playsRepo.ShowPlays();
 
-            foreach (RunPlays play in listOfPlays)
+            foreach (Plays play in listOfPlays)
             {
-                Console.WriteLine($"{play.PlayNumber} {play.Name}");
+                if (play.PlayType == Plays.Type.Run)
+                {
+                    Console.WriteLine($"{play.PlayNumber}. - {play.Name}");
+                }
             }
         }
 
         public void DisplayPassPlays()
         {
-            Console.Clear();
-            List<PassPlays> listOfPassPlays = _passPlaysRepo.ShowPassPlays();
+            Console.WriteLine("------Pass Plays------");
+            List<Plays> listOfPlays = _playsRepo.ShowPlays();
 
-            foreach (PassPlays play in listOfPassPlays)
+            foreach (Plays play in listOfPlays)
             {
-                Console.WriteLine($"{play.PlayNumber} {play.Name}");
+                if (play.PlayType == Plays.Type.Pass )
+                {
+                    Console.WriteLine($"{play.PlayNumber}. - {play.Name}");
+                }
+                
             }
         }
 
-        public void SeedRunPlays()
+        public void SeedPlays()
         {
-            var runPlay1 = new RunPlays("Quarterback Draw", -3, 12, 1);
-            var runPlay2 = new RunPlays("Running Back Toss", -5, 7, 2);
-            var runPlay3 = new RunPlays("Running Back Dive", -1, 5, 3);
+            var runPlay1 = new Plays("Quarterback Draw", -3, 12, 1, Plays.Type.Run);
+            var runPlay2 = new Plays("Running Back Toss", -5, 7, 2, Plays.Type.Run);
+            var runPlay3 = new Plays("Running Back Dive", -1, 5, 3, Plays.Type.Run);
 
-            _runPlaysRepo.AddRunPlayToList(runPlay1);
-            _runPlaysRepo.AddRunPlayToList(runPlay2);
-            _runPlaysRepo.AddRunPlayToList(runPlay3);
-        }
+            _playsRepo.AddPlayToList(runPlay1);
+            _playsRepo.AddPlayToList(runPlay2);
+            _playsRepo.AddPlayToList(runPlay3);
+      
+            Plays passPlay1 = new Plays("Tight End Post", 0, 15, 4, Plays.Type.Pass);
+            var passPlay2 = new Plays("Wide Receiver Screen", 0, 15, 5, Plays.Type.Pass);
+            var passPlay3 = new Plays("Wide Receiver Fade", 0, 10, 6, Plays.Type.Pass);
+            
+            _playsRepo.AddPlayToList(passPlay1);
+            _playsRepo.AddPlayToList(passPlay2);
+            _playsRepo.AddPlayToList(passPlay3);
 
-        public void SeedPassPlays()
-        {
-            var passPlay1 = new PassPlays("Tight End Post", 0, 15, 1);
-            var passPlay2 = new PassPlays("Wide Receiver Screen", 0, 15, 2);
-            var passPlay3 = new PassPlays("Wide Receiver Fade", 0, 10, 3);
-
-            _passPlaysRepo.AddPassPlayToList(passPlay1);
-            _passPlaysRepo.AddPassPlayToList(passPlay2);
-            _passPlaysRepo.AddPassPlayToList(passPlay3);
         }
         
-        public int RunRunPlayByRunNumber(int runNumber)
+        public int RunPlayByPlayNumber(int runNumber)
         
         {
             Console.Clear();
-            RunPlays runPlay = _runPlaysRepo.GetRunPlayByPlayNumber(runNumber);
+            Plays runPlay = _playsRepo.GetRunPlayByPlayNumber(runNumber);
             runPlay.SetRandom(runPlay.MinYards, runPlay.MaxYards);
             if (runPlay != null)
             {
-                Console.WriteLine($"You ran {runPlay.Name} and you gained {runPlay.YardsGained} yards!");
-                return runPlay.YardsGained;
+                if (runPlay.YardsGained < 0)
+                {
+                    Console.WriteLine($"You ran {runPlay.Name} and you lossed {Math.Abs(runPlay.YardsGained)} yards!");
+                    return runPlay.YardsGained;
+                }
+                else
+                {
+                    Console.WriteLine($"You ran {runPlay.Name} and you gained {runPlay.YardsGained} yards!");
+                    return runPlay.YardsGained;
+                }
             }
             else
             {
                 Console.WriteLine("There is no run play with that number...");
-                return 0;
-            }
-        }
-
-        public int RunPassPlayByPlayNumber(int passPlayNumber)
-        {
-            Console.Clear();
-            
-            PassPlays passPlay = _passPlaysRepo.GetPassPlayByPlayNumber(passPlayNumber);
-            passPlay.SetRandom(passPlay.MinYards, passPlay.MaxYards);
-            if (passPlay != null)
-            {
-                Console.WriteLine($"You ran {passPlay.Name} and you gained {passPlay.YardsGained} yards!");
-                return passPlay.YardsGained;
-            }
-            else
-            {
-                Console.WriteLine("There is no pass play with that number...");
                 return 0;
             }
         }

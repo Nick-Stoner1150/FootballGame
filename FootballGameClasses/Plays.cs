@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FootballGameClasses
 {
-    public class RunPlays
+    public class Plays
     {
         public string Name { get; }
         public int PlayNumber { get; }
@@ -14,19 +14,25 @@ namespace FootballGameClasses
         public int MaxYards { get; set; }
         public int YardsGained;
         private static Random rand = new Random();
+        public enum Type
+        { Run = 1, 
+          Pass
+        };
+        public Type PlayType;
 
-        public RunPlays()
+        public Plays()
         {
 
         }
 
-        public RunPlays(string name, int minYards, int maxYards, int playNumber)
+        public Plays(string name, int minYards, int maxYards, int playNumber, Type playType)
         {
             Name = name;
             MinYards = minYards;
             MaxYards = maxYards;
             YardsGained = rand.Next(minYards, maxYards);
             PlayNumber = playNumber;
+            PlayType = playType;
             
         }
         public void SetRandom(int minYards, int maxYards)
