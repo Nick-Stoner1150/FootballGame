@@ -10,8 +10,10 @@ namespace FootballGameClasses
     {
         public string Name { get; }
         public int PlayNumber { get; }
+        public int MinYards { get; set; }
+        public int MaxYards { get; set; }
         public int YardsGained;
-        private readonly Random rand = new Random();
+        private static Random rand = new Random();
 
         public RunPlays()
         {
@@ -21,13 +23,17 @@ namespace FootballGameClasses
         public RunPlays(string name, int minYards, int maxYards, int playNumber)
         {
             Name = name;
+            MinYards = minYards;
+            MaxYards = maxYards;
             YardsGained = rand.Next(minYards, maxYards);
             PlayNumber = playNumber;
             
         }
-
-
-
-
+        public void SetRandom(int minYards, int maxYards)
+        {
+            YardsGained = rand.Next(minYards, maxYards);
+        }
     }
+
+    
 }

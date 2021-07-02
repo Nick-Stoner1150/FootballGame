@@ -48,21 +48,38 @@ namespace FootballGameUI
                         Console.WriteLine("Please select the play number you would like to run...");
                         int runNumber = int.Parse(Console.ReadLine());
                         FootballField newFieldPosition = CalculateFieldPosition(RunRunPlayByRunNumber(runNumber), currentFieldPosition);
-                        IsGameOver(newFieldPosition.YardLine);
-                        SetNewFieldPosition(currentFieldPosition, newFieldPosition); 
-                        Console.WriteLine($"It is now {newFieldPosition.Down} down on the {newFieldPosition.YardLine} yard line.");
+                        bool isGameOver = IsGameOver(newFieldPosition.YardLine);
+                        if (!isGameOver)
+                        {
+                            ResetFieldPosition(currentFieldPosition);
+                        }
+                        else
+                        {
+                            SetNewFieldPosition(currentFieldPosition, newFieldPosition);
+                            Console.WriteLine($"It is now {newFieldPosition.Down} down on the {newFieldPosition.YardLine} yard line.");
+                        }
                         break;
                     case "2":
                         Console.Clear();
                         DisplayPassPlays();
                         Console.WriteLine("Please select the play number you would like to run...");
                         int passNumber = int.Parse(Console.ReadLine());
-                        FootballField newFieldPositionPass = newFieldPosition = CalculateFieldPosition(RunPassPlayByPlayNumber(passNumber), currentFieldPosition);
-                        IsGameOver(currentFieldPosition.YardLine);
-                        SetNewFieldPosition(currentFieldPosition, newFieldPositionPass);
-                        Console.WriteLine($"It is now {newFieldPositionPass.Down} down on the {newFieldPositionPass.YardLine} yard line.");
+                        FootballField newFieldPositionPass = CalculateFieldPosition(RunPassPlayByPlayNumber(passNumber), currentFieldPosition);
+                        bool isGameOver2 = IsGameOver(newFieldPositionPass.YardLine);
+                        if (!isGameOver2)
+                        {
+                            ResetFieldPosition(currentFieldPosition);
+                        }
+                        else
+                        {
+                            SetNewFieldPosition(currentFieldPosition, newFieldPositionPass);
+                            Console.WriteLine($"It is now {newFieldPositionPass.Down} down on the {newFieldPositionPass.YardLine} yard line.");
+                        }
                         break;
                     case "3":
+                        ResetFieldPosition(currentFieldPosition);
+                        break;
+                    case "4":
                         Console.WriteLine("Goodbye!");
                         isRunning = false;
                         break;
@@ -79,14 +96,16 @@ namespace FootballGameUI
 
         private void DisplayMenu()
         {
-            Console.WriteLine($"-----Playbook-------\n" +
-                              $"1. Run\n" +
-                              $"2. Pass\n" +
-                              $"3. Quit Game");
+            Console.WriteLine($"-----Beat Tom Brady-------\n" +
+                              $"1. Run Plays\n" +
+                              $"2. Pass Plays\n" +
+                              $"3. Reset or Start Over\n" +
+                              $"4. Quit Game\n");
         }
 
         public void DisplayRunPlays()
         {
+            Console.Clear();
             List<RunPlays> listOfPlays = _runPlaysRepo.ShowRunPlays();
 
             foreach (RunPlays play in listOfPlays)
@@ -108,9 +127,9 @@ namespace FootballGameUI
 
         public void SeedRunPlays()
         {
-            var runPlay1 = new RunPlays("QB Draw", -3, 12, 1);
-            var runPlay2 = new RunPlays("RB Toss", -5, 7, 2);
-            var runPlay3 = new RunPlays("RB Dive", -1, 5, 3);
+            var runPlay1 = new RunPlays("Quarterback Draw", -3, 12, 1);
+            var runPlay2 = new RunPlays("Running Back Toss", -5, 7, 2);
+            var runPlay3 = new RunPlays("Running Back Dive", -1, 5, 3);
 
             _runPlaysRepo.AddRunPlayToList(runPlay1);
             _runPlaysRepo.AddRunPlayToList(runPlay2);
@@ -119,9 +138,9 @@ namespace FootballGameUI
 
         public void SeedPassPlays()
         {
-            var passPlay1 = new PassPlays("TE Post", 0, 15, 1);
-            var passPlay2 = new PassPlays("WR Screen", 0, 12, 2);
-            var passPlay3 = new PassPlays("WR Fade", 0, 15, 3);
+            var passPlay1 = new PassPlays("Tight End Post", 0, 15, 1);
+            var passPlay2 = new PassPlays("Wide Receiver Screen", 0, 15, 2);
+            var passPlay3 = new PassPlays("Wide Receiver Fade", 0, 10, 3);
 
             _passPlaysRepo.AddPassPlayToList(passPlay1);
             _passPlaysRepo.AddPassPlayToList(passPlay2);
@@ -129,9 +148,11 @@ namespace FootballGameUI
         }
         
         public int RunRunPlayByRunNumber(int runNumber)
+        
         {
+            Console.Clear();
             RunPlays runPlay = _runPlaysRepo.GetRunPlayByPlayNumber(runNumber);
-
+            runPlay.SetRandom(runPlay.MinYards, runPlay.MaxYards);
             if (runPlay != null)
             {
                 Console.WriteLine($"You ran {runPlay.Name} and you gained {runPlay.YardsGained} yards!");
@@ -146,8 +167,10 @@ namespace FootballGameUI
 
         public int RunPassPlayByPlayNumber(int passPlayNumber)
         {
+            Console.Clear();
+            
             PassPlays passPlay = _passPlaysRepo.GetPassPlayByPlayNumber(passPlayNumber);
-
+            passPlay.SetRandom(passPlay.MinYards, passPlay.MaxYards);
             if (passPlay != null)
             {
                 Console.WriteLine($"You ran {passPlay.Name} and you gained {passPlay.YardsGained} yards!");
@@ -166,7 +189,7 @@ namespace FootballGameUI
 
             if (yardsGained >= currentFieldPosition.YardLine)
             {
-                Console.WriteLine("CONGRATULATIONS! You're going to DISNEY WORLD!!!!");
+                Console.WriteLine("TOUCHDOWN!!! You beat Tom Brady!!! CONGRATULATIONS! You're going to DISNEY WORLD!!!!");
                 FootballField newFieldPosition = new FootballField(0, 0);
                 return newFieldPosition;
             }
@@ -210,6 +233,19 @@ namespace FootballGameUI
             {
                 currentFieldPosition.Down = newFieldPosition.Down;
                 currentFieldPosition.YardLine = newFieldPosition.YardLine;
+                return currentFieldPosition;
+            }
+
+            return null;
+        }
+
+        public FootballField ResetFieldPosition(FootballField currentFieldPosition)
+        {
+            if (currentFieldPosition != null)
+            {
+                currentFieldPosition.Down = 1;
+                currentFieldPosition.YardLine = 15;
+                Console.WriteLine("The game is over and has been reset");
                 return currentFieldPosition;
             }
 
