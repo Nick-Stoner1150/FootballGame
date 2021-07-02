@@ -140,9 +140,10 @@ namespace FootballGameUI
         {
             Console.Clear();
             Plays runPlay = _playsRepo.GetRunPlayByPlayNumber(runNumber);
-            runPlay.SetRandom(runPlay.MinYards, runPlay.MaxYards);
+            
             if (runPlay != null)
             {
+                runPlay.SetRandom(runPlay.MinYards, runPlay.MaxYards);
                 if (runPlay.YardsGained < 0)
                 {
                     Console.WriteLine($"You ran {runPlay.Name} and you lossed {Math.Abs(runPlay.YardsGained)} yards!");
